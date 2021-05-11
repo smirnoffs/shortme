@@ -1,0 +1,35 @@
+### Create an URL
+POST {{host}}/urls HTTP/1.1
+Content-Type: application/json
+
+{
+    "target": "https://wunder.social/"
+}
+
+### Get an URL
+GET {{host}}/oOpdO HTTP/1.1
+
+
+### Create an URL with overwrite
+POST {{host}}/urls HTTP/1.1
+Content-Type: application/json
+
+{
+    "target": "https://sergii.work/",
+    "overwrite": "sergii"
+}
+
+### Test redirect with overwrite
+GET {{host}}/sergii HTTP/1.1
+
+
+### Test non-existing object
+GET {{host}}/332 HTTP/1.1
+
+### Create an URL
+POST {{host}}/urls HTTP/1.1
+Content-Type: application/json
+
+{
+    "target": "https://reddit.com/"
+}
