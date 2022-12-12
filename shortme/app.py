@@ -8,21 +8,15 @@ from diskcache import Cache
 from hashids import Hashids
 import os
 
-
 app = FastAPI(title="URL Shortner")
 
-origins = [
-    "http://localhost:3000",
-]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-storage = Cache("shme.db", eviction_policy="none")
+storage = Cache("/data", eviction_policy="none")
 hasher = Hashids(salt=os.getenv("SHORTME_SALT", "shortme"), min_length=5)
 host = os.getenv("SHORTME_HOST", "http://localhost:8088")
 

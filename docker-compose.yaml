@@ -1,0 +1,44 @@
+version: '3.9'
+services:
+  shortme:
+    build: .
+    ports:
+      - "80:8088"
+    volumes:
+      - ./shortme/data:/data
+    environment:
+      SHORTME_SALT: ${SHORTME_SALT}
+      SHORTME_HOST: ${SHORTME_HOST}
+    depends_on:
+      litestream_restore:
+        condition: service_completed_successfully
+  litestream:
+    image: litestream/litestream
+    volumes:
+      - ./shortme/data:/data
+    environment:
+      LITESTREAM_ACCESS_KEY_ID: ${LITESTREAM_ACCESS_KEY_ID}
+      LITESTREAM_SECRET_ACCESS_KEY: ${LITESTREAM_SECRET_ACCESS_KEY}
+    depends_on:
+      litestream_restore:
+        condition: service_completed_successfully
+    command:
+      [
+        "replicate",
+        "/data/cache.db",
+        "s3://${SHORTME_S3_BUCKET}/cache.db"
+      ]
+  litestream_restore:
+    image: litestream/litestream
+    volumes:
+      - ./shortme/data:/data
+    environment:
+      LITESTREAM_ACCESS_KEY_ID: ${LITESTREAM_ACCESS_KEY_ID}
+      LITESTREAM_SECRET_ACCESS_KEY: ${LITESTREAM_SECRET_ACCESS_KEY}
+    command:
+      [
+        "restore",
+        "-o",
+        "/data/cache.db",
+        "s3://${SHORTME_S3_BUCKET}/cache.db"
+      ]
